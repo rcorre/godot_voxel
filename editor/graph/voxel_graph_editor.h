@@ -1,6 +1,7 @@
 #ifndef VOXEL_GRAPH_EDITOR_H
 #define VOXEL_GRAPH_EDITOR_H
 
+#include "../../terrain/voxel_node.h"
 #include "../voxel_debug.h"
 #include <scene/gui/control.h>
 
@@ -57,6 +58,7 @@ private:
 	void _on_graph_changed();
 	void _on_graph_node_name_changed(int node_id);
 	void _on_analyze_range_button_pressed();
+	void _on_live_update_toggled(bool enabled);
 	void _on_range_analysis_toggled(bool enabled);
 	void _on_range_analysis_area_changed();
 
@@ -74,8 +76,9 @@ private:
 	UndoRedo *_undo_redo = nullptr;
 	Vector2 _click_position;
 	bool _nothing_selected_check_scheduled = false;
+	bool _live_update_enabled = false;
 	float _time_before_preview_update = 0.f;
-	Spatial *_voxel_node = nullptr;
+	VoxelNode *_voxel_node = nullptr;
 	VoxelDebug::DebugRenderer _debug_renderer;
 };
 

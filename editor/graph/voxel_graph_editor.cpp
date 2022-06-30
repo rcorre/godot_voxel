@@ -189,6 +189,11 @@ VoxelGraphEditor::VoxelGraphEditor() {
 		range_analysis_button->connect("pressed", this, "_on_analyze_range_button_pressed");
 		toolbar->add_child(range_analysis_button);
 
+		CheckBox *live_update_checkbox = memnew(CheckBox);
+		live_update_checkbox->set_text("Live Update...");
+		live_update_checkbox->connect("toggled", this, "_on_live_update_toggled");
+		toolbar->add_child(live_update_checkbox);
+
 		vbox_container->add_child(toolbar);
 	}
 
@@ -291,6 +296,9 @@ void VoxelGraphEditor::_process(float delta) {
 		_time_before_preview_update -= delta;
 		if (_time_before_preview_update < 0.f) {
 			update_previews();
+			if (_live_update_enabled) {
+				_voxel_node->restart_stream();
+			}
 		}
 	}
 }
@@ -959,6 +967,10 @@ void VoxelGraphEditor::_on_analyze_range_button_pressed() {
 	_range_analysis_dialog->popup_centered_minsize();
 }
 
+void VoxelGraphEditor::_on_live_update_toggled(bool enabled) {
+	_live_update_enabled = enabled;
+}
+
 void VoxelGraphEditor::_on_range_analysis_toggled(bool enabled) {
 	schedule_preview_update();
 	update_range_analysis_gizmo();
@@ -991,6 +1003,7 @@ void VoxelGraphEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_profile_button_pressed"), &VoxelGraphEditor::_on_profile_button_pressed);
 	ClassDB::bind_method(D_METHOD("_on_analyze_range_button_pressed"),
 			&VoxelGraphEditor::_on_analyze_range_button_pressed);
+	ClassDB::bind_method(D_METHOD("_on_live_update_toggled", "enabled"), &VoxelGraphEditor::_on_live_update_toggled);
 	ClassDB::bind_method(D_METHOD("_on_range_analysis_toggled", "enabled"),
 			&VoxelGraphEditor::_on_range_analysis_toggled);
 	ClassDB::bind_method(D_METHOD("_on_range_analysis_area_changed"),
